@@ -162,16 +162,16 @@
             </div>
         @endif
 
-        <div class="btn-group-toggle d-flex justify-content-center mb-4" data-toggle="buttons">
+        <!--<div class="btn-group-toggle d-flex justify-content-center mb-4" data-toggle="buttons">
             <label class="btn btn-custom active me-3">
                 <input type="radio" name="options" id="option1" autocomplete="off" checked> HOTEL
             </label>
             <label class="btn btn-custom btn-wide">
                 <input type="radio" name="options" id="option2" autocomplete="off"> HOTEL + TRANSPORTE
             </label>
-        </div>
+        </div>-->
         
-        <form action="{{ route('process.booking') }}" method="POST">
+        <form action="{{ route('buscar') }}" method="POST">
             @csrf
             <div class="row text-center justify-content-center">
                 <div class="col-md-2 mb-3">
@@ -194,7 +194,6 @@
                 <div class="col-md-2 mb-3">
                     <input type="number" name="numero_personas" class="form-control" placeholder="Número de personas" required>
                 </div>
-                
             </div>
         
             <div class="d-flex justify-content-center">
@@ -204,9 +203,9 @@
                         {{ session('error') }}
                     </div>
                 @endif
-
             </div>
         </form>
+        
 
         <style>
             /* Ajusta la altura del carrusel */
