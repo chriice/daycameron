@@ -11,8 +11,8 @@
             color: #fff;
         }
         .form-control {
-            background-color: #fff; /* Cambiado a blanco */
-            color: #000; /* Texto en color negro */
+            background-color: #fff; /* Color de fondo blanco */
+            color: #000; /* Color de texto negro */
             border: 1px solid #555;
         }
         .btn-primary, .btn-warning {
@@ -34,11 +34,6 @@
         .btn-add:hover, .btn-remove:hover {
             background-color: #d4ac0d;
         }
-        .btn-warning:disabled {
-            background-color: #555; /* Botón "Reservar" deshabilitado en color gris oscuro */
-            color: #888;
-            border: none;
-        }
     </style>
 </head>
 <body>
@@ -55,18 +50,17 @@
                         <input type="text" class="form-control" placeholder="Escribe tu apellido" required>
                     </div>
                     <div class="mb-3">
+                        <input type="text" class="form-control" placeholder="Escribe tu teléfono (Opcional)">
+                    </div>
+                    <div class="mb-3">
                         <input type="text" class="form-control" placeholder="DUI" required>
                     </div>
                     <div class="mb-3">
                         <input type="email" class="form-control" placeholder="Escribe tu e-mail" required>
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Escribe tu teléfono (Opcional)">
-                    </div>
-                    <div class="mb-3">
                         <input type="text" class="form-control" placeholder="Ciudad">
                     </div>
-                
                     <div class="mb-3">
                         <input type="text" class="form-control" placeholder="Dirección" required>
                     </div>
@@ -77,7 +71,7 @@
                         </label>
                     </div>
                     <div class="d-grid gap-2">
-                        <button type="submit" id="btnReservar" class="btn btn-warning" disabled>Reservar</button>
+                        <button type="submit" class="btn btn-warning" id="btnReservar" disabled>Reservar</button>
                     </div>
                 </form>
             </div>
@@ -88,19 +82,19 @@
                 <p class="text-center">Agregar visitantes (menores de edad deberán ir con sus padres de familia)</p>
                 <form id="formInvitados">
                     <div class="mb-3">
-                        <input type="text" id="nombreInvitado" class="form-control" placeholder="Nombre completo" required>
+                        <input type="text" class="form-control" placeholder="Nombre completo" id="nombreCompleto" required>
                     </div>
                     <div class="mb-3">
-                        <input type="number" id="edadInvitado" class="form-control" placeholder="Edad" required>
+                        <input type="number" class="form-control" placeholder="Edad" id="edad" required>
                     </div>
                     <div class="mb-3">
-                        <input type="text" id="telefonoInvitado" class="form-control" placeholder="Teléfono (no obligatorio)">
+                        <input type="text" class="form-control" placeholder="Teléfono (no obligatorio)" id="telefono">
                     </div>
                     <div class="mb-3">
-                        <input type="text" id="duiInvitado" class="form-control" placeholder="DUI (no obligatorio)">
+                        <input type="text" class="form-control" placeholder="DUI (no obligatorio)" id="dui">
                     </div>
                     <div class="d-grid gap-2">
-                        <button type="button" id="btnAddInvitado" class="btn-add" disabled>+</button>
+                        <button type="button" class="btn-add">+</button>
                     </div>
                 </form>
 
@@ -117,57 +111,54 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let numeroPersonas = {{ $numeroPersonas }} - 1; // Número de personas a registrar como invitados
-        let invitadosContador = 0; // Contador de invitados agregados
+        // Definir el número total de personas y restar 1 para el anfitrión
+        let numeroPersonas = {{ $numeroPersonas }} - 1;  // $numeroPersonas viene del backend
+        let invitadosAgregados = 0;
 
-        // Habilitar/deshabilitar el botón de agregar invitado
-        document.querySelectorAll('#nombreInvitado, #edadInvitado').forEach(input => {
-            input.addEventListener('input', function() {
-                const nombre = document.querySelector('#nombreInvitado').value.trim();
-                const edad = document.querySelector('#edadInvitado').value.trim();
-                document.querySelector('#btnAddInvitado').disabled = !(nombre && edad);
-            });
-        });
+        // Función para verificar si se han agregado suficientes invitados y desbloquear el botón de reserva
+        function verificarInvitados() {
+            const btnReservar = document.querySelector('#btnReservar');
+            if (invitadosAgregados === numeroPersonas) {
+                btnReservar.disabled = false;
+            } else {
+                btnReservar.disabled = true;
+            }
+        }
 
-        // Agregar invitado a la lista y deshabilitar el botón de reservar si no se han agregado todos los invitados
-        document.querySelector('#btnAddInvitado').addEventListener('click', function() {
-            const nombre = document.querySelector('#nombreInvitado').value;
-            const edad = document.querySelector('#edadInvitado').value;
+        // Manejador de eventos para el botón de agregar invitado
+        document.querySelector('.btn-add').addEventListener('click', function() {
+            const nombre = document.querySelector('#nombreCompleto').value;
+            const edad = document.querySelector('#edad').value;
 
-            if (nombre && edad) {
+            if (nombre && edad && invitadosAgregados < numeroPersonas) {
+                // Crear el elemento de la lista con el nombre y la edad del invitado
                 const li = document.createElement('li');
                 li.className = 'list-group-item d-flex justify-content-between align-items-center';
                 li.textContent = `${nombre}, ${edad} años`;
 
+                // Crear el botón de eliminar para cada invitado
                 const btnRemove = document.createElement('button');
                 btnRemove.className = 'btn-remove';
                 btnRemove.textContent = '−';
                 btnRemove.addEventListener('click', function() {
                     li.remove();
-                    invitadosContador--;
-                    verificarInvitados();
+                    invitadosAgregados--;
+                    verificarInvitados(); // Verificar si el botón debe bloquearse nuevamente
                 });
 
                 li.appendChild(btnRemove);
                 document.querySelector('#listaInvitados').appendChild(li);
 
-                invitadosContador++;
-                verificarInvitados();
+                // Incrementar el número de invitados agregados
+                invitadosAgregados++;
+                verificarInvitados(); // Verificar si se puede desbloquear el botón
 
                 // Limpiar los campos del formulario de invitados
                 document.querySelector('#formInvitados').reset();
-                document.querySelector('#btnAddInvitado').disabled = true;
+            } else if (invitadosAgregados >= numeroPersonas) {
+                alert('Has agregado el número máximo de invitados.');
             }
         });
-
-        // Verificar si se han agregado todos los invitados y habilitar/deshabilitar el botón de reservar
-        function verificarInvitados() {
-            if (invitadosContador >= numeroPersonas) {
-                document.querySelector('#btnReservar').disabled = false;
-            } else {
-                document.querySelector('#btnReservar').disabled = true;
-            }
-        }
     </script>
 </body>
 </html>

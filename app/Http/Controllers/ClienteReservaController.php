@@ -10,12 +10,13 @@ use App\Models\Habitacion;
 
 class ClienteReservaController extends Controller
 {
-    public function mostrarFormularioCliente(Request $request)
+    // Luego, en ClienteReservaController, puedes acceder a esos datos así:
+    public function mostrarFormularioCliente()
     {
-       // Asegúrate de que la variable $numeroPersonas sea pasada a la vista
-        $numeroPersonas = $request->input('numero_personas'); // Suponiendo que obtienes este valor del formulario de búsqueda
+        // Obtener los datos de la sesión
+        $numeroPersonas = session('numero_personas');
 
-        return view('datos_cliente', compact('numeroPersonas'));
+    return view('datos_cliente', compact('numeroPersonas'));
     }
 
     public function guardarReserva(Request $request)
