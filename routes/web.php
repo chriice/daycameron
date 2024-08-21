@@ -6,7 +6,5 @@ use App\Http\Controllers\ReservaController;
 
 Route::get('/', [HomeController::class, 'index']);
 
-
-
 Route::post('/buscar', [ReservaController::class, 'buscar'])->name('buscar');
 
