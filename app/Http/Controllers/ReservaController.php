@@ -3,40 +3,33 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Habitacion;
 use Illuminate\Support\Facades\DB;
-
 
 class ReservaController extends Controller
 {
     public function buscar(Request $request)
-{
-    $fechaEntrada = $request->input('fecha_entrada');
-    $fechaSalida = $request->input('fecha_salida');
-    $numeroPersonas = $request->input('numero_personas');
+    {
+        // Capturar los datos del formulario
+        $fechaEntrada = $request->input('fecha_entrada');
+        $fechaSalida = $request->input('fecha_salida');
+        $numeroPersonas = $request->input('numero_personas');
+        $hotelId = $request->input('hotel');
 
-    // Realiza la consulta en la base de datos
-    $habitacionesDisponibles = DB::table('habitaciones')
-        ->leftJoin('reservas', function($join) use ($fechaEntrada, $fechaSalida) {
-            $join->on('habitaciones.id_habitacion', '=', 'reservas.id_habitacion')
-                 ->where(function($query) use ($fechaEntrada, $fechaSalida) {
-                     $query->whereBetween('reservas.fecha_entrada', [$fechaEntrada, $fechaSalida])
-                           ->orWhereBetween('reservas.fecha_salida', [$fechaEntrada, $fechaSalida])
-                           ->orWhere(function($query) use ($fechaEntrada, $fechaSalida) {
-                               $query->where('reservas.fecha_entrada', '<', $fechaEntrada)
-                                     ->where('reservas.fecha_salida', '>', $fechaSalida);
-                           });
-                 });
-        })
-        ->whereNull('reservas.id_reserva')
-        ->get();
+        // Realizar la consulta de disponibilidad de habitaciones
+        $habitacionesDisponibles = Habitacion::where('id_hotel', $hotelId)
+            ->whereDoesntHave('reservas', function ($query) use ($fechaEntrada, $fechaSalida) {
+                $query->whereBetween('fecha_entrada', [$fechaEntrada, $fechaSalida])
+                      ->orWhereBetween('fecha_salida', [$fechaEntrada, $fechaSalida]);
+            })
+            ->get();
 
-    // Verifica si hay habitaciones disponibles
-    if ($habitacionesDisponibles->isEmpty()) {
-        return redirect()->back()->with('error', 'No hay habitaciones disponibles para las fechas seleccionadas.');
+        // Lógica para mostrar el botón "Siguiente" según el número de personas
+        $mostrarBotonSiguiente = false;
+        if ($numeroPersonas > 0 && $habitacionesDisponibles->count() >= ceil($numeroPersonas / 4)) {
+            $mostrarBotonSiguiente = true;
+        }
+
+        return view('resultado_busqueda', compact('habitacionesDisponibles', 'mostrarBotonSiguiente', 'numeroPersonas'));
     }
-
-    // Redirige a la vista de resultados si hay habitaciones disponibles
-    return view('resultado_busqueda', compact('habitacionesDisponibles'));
-}   
 }
-

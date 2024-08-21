@@ -70,6 +70,7 @@
             border: none;
             border-radius: 15px;
             color: #fff;
+            min-height: 450px; /* Ajustar el tamaño mínimo de las tarjetas */
         }
         .card-custom .card-title {
             color: #f1c40f;
@@ -119,33 +120,29 @@
     </nav>
 
     <!-- Sección Opciones: Hotel y Hotel + Transporte -->
-    <div class="container my-5">
+    <div class="container">
         <h3 class="text-center text-warning">Habitaciones Disponibles</h3>
-        <div class="btn-group-toggle d-flex justify-content-center mb-4" data-toggle="buttons">
-            <label class="btn btn-custom me-3 option-button" id="hotel-option">
-                <input type="radio" name="options" id="option1" autocomplete="off"> HOTEL
-            </label>
-            <label class="btn btn-custom btn-wide option-button" id="hotel-transporte-option">
-                <input type="radio" name="options" id="option2" autocomplete="off"> HOTEL + TRANSPORTE
-            </label>
-        </div>
-
-        <!-- Resultados de búsqueda -->
+    
         <div class="row mt-4">
             @foreach($habitacionesDisponibles as $habitacion)
-            <div class="col-md-4">
-                <div class="card card-custom mb-3">
-                    <img src="{{ asset('images/' . ($habitacion->id_tipo_habitacion == 1 ? 'hbitacionestandar.jpg' : 'habitacionpremium.jpg')) }}" class="card-img-top" alt="Imagen de Habitación">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $habitacion->comentarios ?? 'Habitación disponible' }}</h5>
-                        <p class="card-text">Estado: {{ $habitacion->estado }}</p>
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-primary btn-block option-button" id="reservar-{{ $habitacion->id_habitacion }}">Reservar</button>
+                <div class="col-md-4">
+                    <div class="card card-custom mb-3">
+                        <img src="{{ asset('images/' . ($habitacion->id_tipo_habitacion == 1 ? 'hbitacionestandar.jpg' : 'habitacionpremium.jpg')) }}" class="card-img-top" alt="Imagen de Habitación">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $habitacion->comentarios ?? 'Habitación disponible' }}</h5>
+                            <p class="card-text">Estado: {{ $habitacion->estado }}</p>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-primary btn-block option-button" id="reservar-{{ $habitacion->id_habitacion }}" data-id="{{ $habitacion->id_habitacion }}">Reservar</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             @endforeach
+        </div>
+    
+        <!-- Botón "Siguiente" oculto inicialmente -->
+        <div class="d-flex justify-content-center mt-3">
+            <a href="{{ route('datos.cliente') }}" id="btn-siguiente" class="btn btn-warning" style="display:none;">Siguiente</a>
         </div>
     </div>
 
@@ -202,12 +199,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Script para manejar la selección de las opciones -->
     <script>
-        document.querySelectorAll('.option-button').forEach(button => {
-            button.addEventListener('click', function() {
-                document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
-                this.classList.add('selected');
+        document.addEventListener('DOMContentLoaded', function () {
+            let selectedRooms = 0;
+            const requiredRooms = Math.ceil({{ $numeroPersonas }} / 4);
+    
+            document.querySelectorAll('.option-button').forEach(button => {
+                button.addEventListener('click', function () {
+                    if (this.classList.contains('selected')) {
+                        this.classList.remove('selected');
+                        selectedRooms--;
+                    } else {
+                        this.classList.add('selected');
+                        selectedRooms++;
+                    }
+    
+                    // Mostrar el botón "Siguiente" si se han seleccionado suficientes habitaciones
+                    if (selectedRooms >= requiredRooms) {
+                        document.getElementById('btn-siguiente').style.display = 'block';
+                    } else {
+                        document.getElementById('btn-siguiente').style.display = 'none';
+                    }
+                });
             });
         });
     </script>
