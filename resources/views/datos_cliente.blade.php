@@ -23,16 +23,26 @@
         .btn-primary:hover, .btn-warning:hover {
             background-color: #d4ac0d;
         }
-        .btn-add, .btn-remove {
+        .btn-add {
             background-color: #f1c40f;
             border: none;
             color: #000;
             font-size: 20px;
             padding: 5px 10px;
-            border-radius: 50%;
+            border-radius: 10px; /* Forma rectangular con bordes redondeados */
+            width: 50px; /* Ancho reducido */
         }
-        .btn-add:hover, .btn-remove:hover {
+        .btn-add:hover {
             background-color: #d4ac0d;
+        }
+        .btn-remove {
+            border: none;
+            background-color: transparent; /* Elimina el fondo del botón */
+            padding: 0; /* Elimina el relleno */
+        }
+        .btn-remove img {
+            width: 30px; /* Ajusta el tamaño de la imagen */
+            height: 30px;
         }
     </style>
 </head>
@@ -139,7 +149,9 @@
                 // Crear el botón de eliminar para cada invitado
                 const btnRemove = document.createElement('button');
                 btnRemove.className = 'btn-remove';
-                btnRemove.textContent = '−';
+                const img = document.createElement('img');
+                img.src = '{{ asset("images/eliminar.webp") }}';  // Ruta de la imagen del basurero
+                btnRemove.appendChild(img);
                 btnRemove.addEventListener('click', function() {
                     li.remove();
                     invitadosAgregados--;
