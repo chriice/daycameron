@@ -14,3 +14,6 @@ Route::get('/datos-cliente', [ClienteReservaController::class, 'mostrarFormulari
 Route::post('/guardar-reserva', [ClienteReservaController::class, 'guardarReserva'])->name('guardar.reserva');
 
 
+Route::get('/pago', function () {
+    return view('pago');
+});
