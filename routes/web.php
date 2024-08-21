@@ -17,3 +17,7 @@ Route::post('/guardar-reserva', [ClienteReservaController::class, 'guardarReserv
 Route::get('/pago', function () {
     return view('pago');
 });
+
+Route::get('/mireserva', function () {
+    return view('mireserva');
+});
