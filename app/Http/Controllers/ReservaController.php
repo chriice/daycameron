@@ -10,11 +10,14 @@ class ReservaController extends Controller
 {
     public function buscar(Request $request)
     {
-
         // Guardar los datos en la sesión
-        return redirect()->route('datos.cliente')
-            ->with('numero_personas', $request->input('numero_personas'));
-        // Capturar los datos del formulario
+        session([
+            'fecha_entrada' => $request->input('fecha_entrada'),
+            'fecha_salida' => $request->input('fecha_salida'),
+            'numero_personas' => $request->input('numero_personas'),
+            'hotel' => $request->input('hotel')
+        ]);
+
         $fechaEntrada = $request->input('fecha_entrada');
         $fechaSalida = $request->input('fecha_salida');
         $numeroPersonas = $request->input('numero_personas');

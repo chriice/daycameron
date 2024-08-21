@@ -16,7 +16,7 @@ class ClienteReservaController extends Controller
         // Obtener los datos de la sesión
         $numeroPersonas = session('numero_personas');
 
-    return view('datos_cliente', compact('numeroPersonas'));
+        return view('datos_cliente', compact('numeroPersonas'));
     }
 
     public function guardarReserva(Request $request)
