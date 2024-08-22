@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,31 +12,39 @@
             background-color: #000;
             color: #fff;
         }
+
         .navbar {
             background-color: #000;
         }
+
         .navbar-brand img {
             width: 50px;
         }
+
         .navbar-nav .nav-link {
             color: #fff;
         }
+
         .navbar-nav .nav-link.active {
             color: #f1c40f;
         }
+
         .btn-reservar {
             background-color: #f1c40f;
             color: #000;
             border-radius: 20px;
         }
+
         .btn-reservar:hover {
             background-color: #d4ac0d;
         }
+
         .hotel-img {
             width: 100%;
             border-radius: 15px;
             margin-top: 20px;
         }
+
         .btn-custom {
             background-color: #FFC107;
             color: #000;
@@ -51,30 +60,40 @@
             justify-content: center;
             transition: background-color 0.3s, border 0.3s;
         }
+
         .btn-wide {
             width: 320px;
         }
-        .btn-custom.active, .btn-custom:hover, .btn-custom:focus {
+
+        .btn-custom.active,
+        .btn-custom:hover,
+        .btn-custom:focus {
             background-color: #FBC02D;
             color: #000;
             border: 2px solid #FFD700;
         }
+
         .btn-group-toggle .btn {
             margin-right: 15px;
         }
+
         .mb-4 {
             margin-bottom: 30px;
         }
+
         .card-custom {
             background-color: #333;
             border: none;
             border-radius: 15px;
             color: #fff;
-            min-height: 450px; /* Ajustar el tamaño mínimo de las tarjetas */
+            min-height: 450px;
+            /* Ajustar el tamaño mínimo de las tarjetas */
         }
+
         .card-custom .card-title {
             color: #f1c40f;
         }
+
         .card-custom .btn-primary {
             background-color: #f1c40f;
             border: none;
@@ -82,15 +101,18 @@
             border-radius: 20px;
             transition: background-color 0.3s, border 0.3s;
         }
+
         .card-custom .btn-primary:hover {
             background-color: #d4ac0d;
         }
+
         .selected {
             background-color: #d4ac0d !important;
             border: 2px solid #FFD700 !important;
         }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -98,7 +120,8 @@
             <a class="navbar-brand" href="#">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -122,27 +145,31 @@
     <!-- Sección Opciones: Hotel y Hotel + Transporte -->
     <div class="container">
         <h3 class="text-center text-warning">Habitaciones Disponibles</h3>
-    
+
         <div class="row mt-4">
-            @foreach($habitacionesDisponibles as $habitacion)
+            @foreach ($habitacionesDisponibles as $habitacion)
                 <div class="col-md-4">
                     <div class="card card-custom mb-3">
-                        <img src="{{ asset('images/' . ($habitacion->id_tipo_habitacion == 1 ? 'hbitacionestandar.jpg' : 'habitacionpremium.jpg')) }}" class="card-img-top" alt="Imagen de Habitación">
+                        <img src="{{ asset('images/' . ($habitacion->id_tipo_habitacion == 1 ? 'hbitacionestandar.jpg' : 'habitacionpremium.jpg')) }}"
+                            class="card-img-top" alt="Imagen de Habitación">
                         <div class="card-body">
                             <h5 class="card-title">{{ $habitacion->comentarios ?? 'Habitación disponible' }}</h5>
                             <p class="card-text">Estado: {{ $habitacion->estado }}</p>
                             <div class="d-flex justify-content-between">
-                                <button class="btn btn-primary btn-block option-button" id="reservar-{{ $habitacion->id_habitacion }}" data-id="{{ $habitacion->id_habitacion }}">Reservar</button>
+                                <button class="btn btn-primary btn-block option-button"
+                                    id="reservar-{{ $habitacion->id_habitacion }}"
+                                    data-id="{{ $habitacion->id_habitacion }}">Reservar</button>
                             </div>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
-    
+
         <!-- Botón "Siguiente" oculto inicialmente -->
         <div class="d-flex justify-content-center mt-3">
-            <a href="{{ route('datos.cliente') }}" id="btn-siguiente" class="btn btn-warning" style="display:none;">Siguiente</a>
+            <a href="{{ route('datos.cliente') }}" id="btn-siguiente" class="btn btn-warning"
+                style="display:none;">Siguiente</a>
         </div>
     </div>
 
@@ -200,29 +227,55 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             let selectedRooms = 0;
             const requiredRooms = Math.ceil({{ $numeroPersonas }} / 4);
-    
+
             document.querySelectorAll('.option-button').forEach(button => {
-                button.addEventListener('click', function () {
+                button.addEventListener('click', function() {
+                    const habitacionId = this.dataset.id;
+
+                    // Verificar si la habitación ya está seleccionada
                     if (this.classList.contains('selected')) {
                         this.classList.remove('selected');
                         selectedRooms--;
+
+                        // Ocultar el botón "Siguiente" si no se han seleccionado suficientes habitaciones
+                        if (selectedRooms < requiredRooms) {
+                            document.getElementById('btn-siguiente').style.display = 'none';
+                        }
                     } else {
-                        this.classList.add('selected');
-                        selectedRooms++;
-                    }
-    
-                    // Mostrar el botón "Siguiente" si se han seleccionado suficientes habitaciones
-                    if (selectedRooms >= requiredRooms) {
-                        document.getElementById('btn-siguiente').style.display = 'block';
-                    } else {
-                        document.getElementById('btn-siguiente').style.display = 'none';
+                        // Enviar la habitación seleccionada al servidor
+                        fetch('{{ route('guardar.habitacion') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                id_habitacion: habitacionId
+                            })
+                        }).then(response => {
+                            if (response.ok) {
+                                this.classList.add('selected');
+                                selectedRooms++;
+
+                                // Mostrar el botón "Siguiente" si se han seleccionado suficientes habitaciones
+                                if (selectedRooms >= requiredRooms) {
+                                    document.getElementById('btn-siguiente').style.display =
+                                        'block';
+                                }
+                            } else {
+                                console.error(
+                                    'Error al guardar la habitación en la sesión.');
+                            }
+                        });
                     }
                 });
             });
         });
     </script>
+
 </body>
+
 </html>

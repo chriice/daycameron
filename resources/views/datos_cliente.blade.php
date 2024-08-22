@@ -52,38 +52,54 @@
             <!-- Información personal -->
             <div class="col-md-6">
                 <h2 class="text-center mb-4">Información personal</h2>
-                <form id="formCliente">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form id="formCliente" action="{{ route('guardar.reserva') }}" method="POST">
+                    @csrf <!-- Token de protección CSRF -->
+                    <!-- Campos del formulario -->
+                    <input type="hidden" name="id_habitacion" value="{{ session('id_habitacion') }}">
+                    <input type="hidden" name="fecha_entrada" value="{{ session('fecha_entrada') }}">
+                    <input type="hidden" name="fecha_salida" value="{{ session('fecha_salida') }}">
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Escribe tu nombre" required>
+                        <input type="text" class="form-control" name="nombre" placeholder="Escribe tu nombre" required>
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Escribe tu apellido" required>
+                        <input type="text" class="form-control" name="apellido" placeholder="Escribe tu apellido" required>
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Escribe tu teléfono (Opcional)">
+                        <input type="text" class="form-control" name="telefono" placeholder="Escribe tu teléfono (Opcional)">
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="DUI" required>
+                        <input type="text" class="form-control" name="dui" placeholder="DUI" required>
                     </div>
                     <div class="mb-3">
-                        <input type="email" class="form-control" placeholder="Escribe tu e-mail" required>
+                        <input type="email" class="form-control" name="email" placeholder="Escribe tu e-mail" required>
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Ciudad">
+                        <input type="text" class="form-control" name="ciudad" placeholder="Ciudad">
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Dirección" required>
+                        <input type="text" class="form-control" name="direccion" placeholder="Dirección" required>
                     </div>
                     <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" value="" id="terminos" required>
+                        <input class="form-check-input" type="checkbox" name="terminos" id="terminos" required>
                         <label class="form-check-label" for="terminos">
                             Términos y condiciones
                         </label>
                     </div>
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-warning" id="btnReservar" disabled>Reservar</button>
+                        <button type="submit" class="btn btn-warning" id="btnReservar">Reservar</button>
                     </div>
                 </form>
+                
             </div>
 
             <!-- Información de invitados -->

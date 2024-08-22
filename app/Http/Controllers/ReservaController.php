@@ -20,14 +20,14 @@ class ReservaController extends Controller
 
         $fechaEntrada = $request->input('fecha_entrada');
         $fechaSalida = $request->input('fecha_salida');
-        $numeroPersonas = $request->input('numero_personas');
+        $numeroPersonas = $request->input('numero_personas'); // Capturar el número de personas
         $hotelId = $request->input('hotel');
 
         // Realizar la consulta de disponibilidad de habitaciones
         $habitacionesDisponibles = Habitacion::where('id_hotel', $hotelId)
             ->whereDoesntHave('reservas', function ($query) use ($fechaEntrada, $fechaSalida) {
                 $query->whereBetween('fecha_entrada', [$fechaEntrada, $fechaSalida])
-                      ->orWhereBetween('fecha_salida', [$fechaEntrada, $fechaSalida]);
+                    ->orWhereBetween('fecha_salida', [$fechaEntrada, $fechaSalida]);
             })
             ->get();
 
@@ -37,8 +37,21 @@ class ReservaController extends Controller
             $mostrarBotonSiguiente = true;
         }
 
+        // Pasar $numeroPersonas a la vista junto con las habitaciones disponibles
         return view('resultado_busqueda', compact('habitacionesDisponibles', 'mostrarBotonSiguiente', 'numeroPersonas'));
     }
 
+
+    public function guardarHabitacion(Request $request)
+    {
+        $request->validate([
+            'id_habitacion' => 'required|exists:habitaciones,id_habitacion',
+        ]);
+    
+        // Guardar la habitación en la sesión o realizar cualquier lógica necesaria
+        session(['id_habitacion' => $request->id_habitacion]);
+    
+        return response()->json(['message' => 'Habitación guardada en la sesión.'], 200);
+    }
     
 }
