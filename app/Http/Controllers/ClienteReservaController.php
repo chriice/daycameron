@@ -18,9 +18,11 @@ class ClienteReservaController extends Controller
     {
         // Obtener los datos de la sesión
         $numeroPersonas = session('numero_personas');
+        $extras = Extra::all(); // Obtener todos los extras disponibles
 
-        return view('datos_cliente', compact('numeroPersonas'));
+        return view('datos_cliente', compact('numeroPersonas', 'extras'));
     }
+
 
     public function guardarReserva(Request $request)
     {

@@ -158,6 +158,15 @@
                             Términos y condiciones
                         </label>
                     </div>
+                    <div class="mb-3">
+                        <label for="extra">Selecciona un Extra:</label>
+                        <select name="id_extra" id="extra" class="form-control">
+                            <option value="" selected disabled>Selecciona una opción</option>
+                            @foreach($extras as $extra)
+                                <option value="{{ $extra->id_extra }}">{{ $extra->nombre }} - ${{ $extra->precio }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-warning" id="btnReservar">Reservar</button>
                     </div>

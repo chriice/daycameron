@@ -180,11 +180,18 @@
                             Información de la habitación no disponible.
                         @endif
                     </p>
-                    <p><strong>Fechas:</strong> {{ session('datosReserva.fecha_entrada') }} -
-                        {{ session('datosReserva.fecha_salida') }}</p>
+                    <p><strong>Extra Seleccionado:</strong>
+                        @if (session('datosReserva.id_extra'))
+                            {{ \App\Models\Extra::find(session('datosReserva.id_extra'))->nombre }}
+                        @else
+                            Ninguno
+                        @endif
+                    </p>
+                    <p><strong>Fechas:</strong> {{ session('datosReserva.fecha_entrada') }} - {{ session('datosReserva.fecha_salida') }}</p>
                     <p><strong>Número de Personas:</strong> {{ session('numero_personas') }}</p>
                     <p><strong>Total a Pagar:</strong> ${{ session('datosReserva.total') }}</p>
                 </div>
+                
             </div>
 
             <div class="col-md-6">
