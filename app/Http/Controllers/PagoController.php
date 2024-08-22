@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cliente;
+use App\Models\Habitacion;
 use App\Models\Reserva;
 
 class PagoController extends Controller
@@ -11,18 +12,18 @@ class PagoController extends Controller
     /**
      * Muestra el formulario de pago.
      */
-    public function mostrarFormularioPago()
-    {
-        // Obtener los datos de la sesión
+    public function mostrarFormularioPago() {
+        // Recuperar los datos de la sesión
         $datosReserva = session('datosReserva');
-
-        // Verifica que los datos de la reserva existan
-        if (!$datosReserva) {
-            return redirect()->route('datos.cliente')->with('error', 'No se encontraron datos de la reserva. Por favor, complete la reserva nuevamente.');
-        }
-
-        // Pasar los datos a la vista de pago
-        return view('pago', compact('datosReserva'));
+    
+        // Recuperar la información completa de la habitación
+        $habitacion = Habitacion::find($datosReserva['id_habitacion']);
+    
+        // Pasar los datos a la vista
+        return view('pago', [
+            'habitacion' => $habitacion,
+            'datosReserva' => $datosReserva
+        ]);
     }
 
     /**

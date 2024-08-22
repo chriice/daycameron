@@ -171,11 +171,19 @@
             <div class="col-md-6 mb-4">
                 <div class="resumen-reserva">
                     <h4>Resumen de la Reserva</h4>
-                    <p><strong>Habitación:</strong> {{ session('habitacion') }}</p>
-                    <p><strong>Fecha de Entrada:</strong> {{ session('fecha_entrada') }}</p>
-                    <p><strong>Fecha de Salida:</strong> {{ session('fecha_salida') }}</p>
+                    <p><strong>Nombre:</strong> {{ session('datosReserva.nombre') }}</p>
+                    <p><strong>Apellido:</strong> {{ session('datosReserva.apellido') }}</p>
+                    <p><strong>Habitación Seleccionada:</strong>
+                        @if ($habitacion)
+                            {{ $habitacion->comentarios }}
+                        @else
+                            Información de la habitación no disponible.
+                        @endif
+                    </p>
+                    <p><strong>Fechas:</strong> {{ session('datosReserva.fecha_entrada') }} -
+                        {{ session('datosReserva.fecha_salida') }}</p>
                     <p><strong>Número de Personas:</strong> {{ session('numero_personas') }}</p>
-                    <p><strong>Total a Pagar:</strong> ${{ session('total') }}</p>
+                    <p><strong>Total a Pagar:</strong> ${{ session('datosReserva.total') }}</p>
                 </div>
             </div>
 
@@ -191,7 +199,8 @@
                         </div>
                         <div class="form-group">
                             <label for="ccnumber">Número de Tarjeta</label>
-                            <input class="form-control" type="text" placeholder="0000 0000 0000 0000" autocomplete="off">
+                            <input class="form-control" type="text" placeholder="0000 0000 0000 0000"
+                                autocomplete="off">
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-4">
