@@ -133,8 +133,6 @@
                         <a class="nav-link" href="#">Servicios</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">País</a>
-                    <li class="nav-item">
                         <a class="nav-link" href="#">Mi Reservación</a>
                     </li>
                 </ul>

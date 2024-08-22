@@ -15,6 +15,18 @@
             justify-content: center;
             align-items: center;
         }
+        .navbar {
+            background-color: #000;
+        }
+        .navbar-brand img {
+            width: 50px;
+        }
+        .navbar-nav .nav-link {
+            color: #fff;
+        }
+        .navbar-nav .nav-link.active {
+            color: #f1c40f;
+        }
 
         .card-custom {
             background: linear-gradient(135deg, #1c1c1c, #2c2c2c);
