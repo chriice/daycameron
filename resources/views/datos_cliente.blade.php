@@ -123,6 +123,10 @@
 
                 <form id="formCliente" action="{{ route('guardar.reserva') }}" method="POST">
                     @csrf <!-- Token de protección CSRF -->
+                    @foreach (session('habitaciones_seleccionadas', []) as $idHabitacion)
+                        <input type="hidden" name="id_habitacion[]" value="{{ $idHabitacion }}">
+                    @endforeach
+
                     <!-- Campos del formulario -->
                     <input type="hidden" name="id_habitacion" value="{{ session('id_habitacion') }}">
                     <input type="hidden" name="fecha_entrada" value="{{ session('fecha_entrada') }}">
@@ -162,8 +166,9 @@
                         <label for="extra">Selecciona un Extra:</label>
                         <select name="id_extra" id="extra" class="form-control">
                             <option value="" selected disabled>Selecciona una opción</option>
-                            @foreach($extras as $extra)
-                                <option value="{{ $extra->id_extra }}">{{ $extra->nombre }} - ${{ $extra->precio }}</option>
+                            @foreach ($extras as $extra)
+                                <option value="{{ $extra->id_extra }}">{{ $extra->nombre }} - ${{ $extra->precio }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -228,7 +233,7 @@
                         <i class="fab fa-linkedin fa-2x"></i>
                     </a>
                 </div>
-    
+
                 <!-- Sección Contacto -->
                 <div class="col-md-3 mb-3">
                     <h5 class="text-warning">Contacto</h5>
@@ -239,7 +244,7 @@
                         <i class="fas fa-envelope me-2"></i>info@daycameron.com
                     </p>
                 </div>
-    
+
                 <!-- Sección Socios -->
                 <div class="col-md-3 mb-3">
                     <h5 class="text-warning">Socios</h5>
@@ -249,7 +254,7 @@
                         <li><a href="#" class="text-white">Socio 3</a></li>
                     </ul>
                 </div>
-    
+
                 <!-- Sección Derechos Reservados -->
                 <div class="col-md-3 mb-3">
                     <h5 class="text-warning">DayCameron</h5>

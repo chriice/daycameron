@@ -45,13 +45,14 @@ class ReservaController extends Controller
     public function guardarHabitacion(Request $request)
     {
         $request->validate([
-            'id_habitacion' => 'required|exists:habitaciones,id_habitacion',
+            'id_habitacion' => 'required|array', // Asegurarse de que sea un array
+            'id_habitacion.*' => 'exists:habitaciones,id_habitacion', // Validar cada ID de habitación
         ]);
     
-        // Guardar la habitación en la sesión o realizar cualquier lógica necesaria
-        session(['id_habitacion' => $request->id_habitacion]);
+        // Guardar el array de habitaciones seleccionadas en la sesión
+        session(['habitaciones_seleccionadas' => $request->id_habitacion]);
     
-        return response()->json(['message' => 'Habitación guardada en la sesión.'], 200);
+        return response()->json(['message' => 'Habitaciones guardadas en la sesión.'], 200);
     }
     
 }

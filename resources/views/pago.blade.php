@@ -174,7 +174,10 @@
                     <p><strong>Nombre:</strong> {{ session('datosReserva.nombre') }}</p>
                     <p><strong>Apellido:</strong> {{ session('datosReserva.apellido') }}</p>
                     <p><strong>Habitación Seleccionada:</strong>
-                        @if ($habitacion)
+                        @foreach ($habitaciones as $habitacion)
+                        <p><strong>Habitación:</strong> {{ $habitacion->comentarios ?? 'Sin comentarios' }}</p>
+                        <p><strong>Precio por día:</strong> ${{ $habitacion->tipoHabitacion->precio }}</p>
+                    @endforeach @if ($habitacion)
                             {{ $habitacion->comentarios }}
                         @else
                             Información de la habitación no disponible.

@@ -34,20 +34,22 @@ class ClienteReservaController extends Controller
             'email' => 'required|email',
             'telefono' => 'nullable|string|max:15',
             'direccion' => 'required|string|max:255',
-            'id_habitacion' => 'required|exists:habitaciones,id_habitacion',
             'fecha_entrada' => 'required|date',
             'fecha_salida' => 'required|date',
             'id_extra' => 'nullable|exists:extras,id_extra',
         ]);
-
+    
+        // Obtener las habitaciones seleccionadas de la sesión
+        $habitacionesSeleccionadas = session('habitaciones_seleccionadas', []);
+    
         // Calcular el total
         $total = $this->calcularTotal(
-            $request->id_habitacion,
+            $habitacionesSeleccionadas,
             $request->fecha_entrada,
             $request->fecha_salida,
             $request->id_extra
         );
-
+    
         // Guardar los datos de la reserva y del cliente en la sesión
         session([
             'datosReserva' => [
@@ -57,35 +59,35 @@ class ClienteReservaController extends Controller
                 'email' => $request->email,
                 'telefono' => $request->telefono,
                 'direccion' => $request->direccion,
-                'id_habitacion' => $request->id_habitacion,
-                'fecha_entrada' => $request->fecha_entrada,
-                'fecha_salida' => $request->fecha_salida,
+                'habitaciones' => $habitacionesSeleccionadas,
+                'fecha_entrada' => $request->fecha_entrada,  // Guardar la fecha de entrada
+                'fecha_salida' => $request->fecha_salida,    // Guardar la fecha de salida
                 'id_extra' => $request->id_extra,
                 'total' => $total,
             ]
         ]);
-
+    
         // Redirigir al formulario de pago
-        return redirect()->route('mostrar.pago')->with('success', 'Datos de reserva guardados. Procede al pago.');
+        return redirect()->route('mostrar.pago');
     }
+    
 
 
 
-    private function calcularTotal($idHabitacion, $fechaEntrada, $fechaSalida, $idExtra = null)
+
+    private function calcularTotal($habitacionesSeleccionadas, $fechaEntrada, $fechaSalida, $idExtra = null)
     {
-        $habitacion = Habitacion::findOrFail($idHabitacion);
-        $precioPorDia = $habitacion->tipoHabitacion->precio;
+        $total = 0;
 
-        // Calcular la cantidad de días de la reserva
-        $dias = \Carbon\Carbon::parse($fechaEntrada)->diffInDays(\Carbon\Carbon::parse($fechaSalida));
+        foreach ($habitacionesSeleccionadas as $idHabitacion) {
+            $habitacion = Habitacion::findOrFail($idHabitacion);
+            $precioPorDia = $habitacion->tipoHabitacion->precio;
 
-        // Si las fechas son iguales, significa que es una estancia de 1 día mínimo
-        if ($dias == 0) {
-            $dias = 1;
+            // Calcular el número de días de la reserva
+            $dias = \Carbon\Carbon::parse($fechaEntrada)->diffInDays(\Carbon\Carbon::parse($fechaSalida)) + 1;
+
+            $total += $precioPorDia * $dias;
         }
-
-        // Calcular el total en función de la cantidad de días
-        $total = $precioPorDia * $dias;
 
         if ($idExtra) {
             $extra = Extra::find($idExtra);

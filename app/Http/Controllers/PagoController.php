@@ -16,15 +16,20 @@ class PagoController extends Controller
         // Recuperar los datos de la sesión
         $datosReserva = session('datosReserva');
     
-        // Recuperar la información completa de la habitación
-        $habitacion = Habitacion::find($datosReserva['id_habitacion']);
+        // Verificar si 'habitaciones' es un array y recuperar las habitaciones seleccionadas
+        $habitaciones = [];
+        if (isset($datosReserva['habitaciones']) && is_array($datosReserva['habitaciones'])) {
+            $habitaciones = Habitacion::whereIn('id_habitacion', $datosReserva['habitaciones'])->get();
+        }
     
         // Pasar los datos a la vista
         return view('pago', [
-            'habitacion' => $habitacion,
+            'habitaciones' => $habitaciones, // Pasar todas las habitaciones seleccionadas
             'datosReserva' => $datosReserva
         ]);
     }
+    
+    
 
     /**
      * Procesa el pago.
