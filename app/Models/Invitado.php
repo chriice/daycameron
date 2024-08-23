@@ -11,12 +11,13 @@ class Invitado extends Model
 
     protected $table = 'invitados';
     protected $primaryKey = 'id_invitados';
+    public $incrementing = true;
 
     protected $fillable = ['nombres', 'apellidos'];
 
     // Relación con cliente (si se utiliza)
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class, 'id_cliente');
+        return $this->hasMany(Invitado::class, 'id_reserva');
     }
 }

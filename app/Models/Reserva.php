@@ -31,4 +31,8 @@ class Reserva extends Model
     {
         return $this->belongsTo(Extra::class, 'id_extra');
     }
+    public function reserva()
+    {
+        return $this->belongsTo(Reserva::class, 'id_reserva');
+    }
 }

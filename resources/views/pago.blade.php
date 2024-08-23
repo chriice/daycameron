@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        /* Estilos personalizados */
         body {
             background-color: #000000;
             height: 100vh;
@@ -171,17 +172,14 @@
             <div class="col-md-6 mb-4">
                 <div class="resumen-reserva">
                     <h4>Resumen de la Reserva</h4>
+                    <!-- Información de la reserva -->
                     <p><strong>Nombre:</strong> {{ session('datosReserva.nombre') }}</p>
                     <p><strong>Apellido:</strong> {{ session('datosReserva.apellido') }}</p>
                     <p><strong>Habitación Seleccionada:</strong>
                         @foreach ($habitaciones as $habitacion)
-                        <p><strong>Habitación:</strong> {{ $habitacion->comentarios ?? 'Sin comentarios' }}</p>
-                        <p><strong>Precio por día:</strong> ${{ $habitacion->tipoHabitacion->precio }}</p>
-                    @endforeach @if ($habitacion)
-                            {{ $habitacion->comentarios }}
-                        @else
-                            Información de la habitación no disponible.
-                        @endif
+                            <p><strong>Habitación:</strong> {{ $habitacion->comentarios ?? 'Sin comentarios' }}</p>
+                            <p><strong>Precio por día:</strong> ${{ $habitacion->tipoHabitacion->precio }}</p>
+                        @endforeach
                     </p>
                     <p><strong>Extra Seleccionado:</strong>
                         @if (session('datosReserva.id_extra'))
@@ -190,11 +188,12 @@
                             Ninguno
                         @endif
                     </p>
-                    <p><strong>Fechas:</strong> {{ session('datosReserva.fecha_entrada') }} - {{ session('datosReserva.fecha_salida') }}</p>
+                    <p><strong>Fechas:</strong> {{ session('datosReserva.fecha_entrada') }} -
+                        {{ session('datosReserva.fecha_salida') }}</p>
                     <p><strong>Número de Personas:</strong> {{ session('numero_personas') }}</p>
                     <p><strong>Total a Pagar:</strong> ${{ session('datosReserva.total') }}</p>
                 </div>
-                
+
             </div>
 
             <div class="col-md-6">
@@ -203,53 +202,57 @@
                         Tarjeta de Crédito/Débito
                     </div>
                     <div class="card-body card-body-custom">
-                        <div class="form-group">
-                            <label for="name">Nombre del Titular</label>
-                            <input class="form-control" id="name" type="text" placeholder="Nombre del titular">
-                        </div>
-                        <div class="form-group">
-                            <label for="ccnumber">Número de Tarjeta</label>
-                            <input class="form-control" type="text" placeholder="0000 0000 0000 0000"
-                                autocomplete="off">
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-sm-4">
-                                <label for="ccmonth">Mes</label>
-                                <select class="form-control" id="ccmonth">
-                                    <option>01</option>
-                                    <option>02</option>
-                                    <option>03</option>
-                                    <option>04</option>
-                                    <option>05</option>
-                                    <option>06</option>
-                                    <option>07</option>
-                                    <option>08</option>
-                                    <option>09</option>
-                                    <option>10</option>
-                                    <option>11</option>
-                                    <option>12</option>
-                                </select>
+                        <form id="paymentForm" action="{{ route('procesar.pago') }}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label for="name">Nombre del Titular</label>
+                                <input class="form-control" id="name" name="name" type="text"
+                                    placeholder="Nombre del titular" required>
                             </div>
-                            <div class="form-group col-sm-4">
-                                <label for="ccyear">Año</label>
-                                <select class="form-control" id="ccyear">
-                                    <option>2024</option>
-                                    <option>2025</option>
-                                    <option>2026</option>
-                                    <option>2027</option>
-                                    <option>2028</option>
-                                </select>
+                            <div class="form-group">
+                                <label for="ccnumber">Número de Tarjeta</label>
+                                <input class="form-control" id="ccnumber" name="ccnumber" type="text"
+                                    placeholder="0000 0000 0000 0000" autocomplete="off" required maxlength="16"
+                                    pattern="\d{16}">
                             </div>
-                            <div class="form-group col-sm-4">
-                                <label for="cvv">CVV/CVC</label>
-                                <input class="form-control" id="cvv" type="text" placeholder="123">
+                            <div class="row">
+                                <div class="form-group col-sm-4">
+                                    <label for="ccmonth">Mes</label>
+                                    <select class="form-control" id="ccmonth" name="ccmonth" required>
+                                        <option>01</option>
+                                        <option>02</option>
+                                        <option>03</option>
+                                        <option>04</option>
+                                        <option>05</option>
+                                        <option>06</option>
+                                        <option>07</option>
+                                        <option>08</option>
+                                        <option>09</option>
+                                        <option>10</option>
+                                        <option>11</option>
+                                        <option>12</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label for="ccyear">Año</label>
+                                    <select class="form-control" id="ccyear" name="ccyear" required>
+                                        <option>2024</option>
+                                        <option>2025</option>
+                                        <option>2026</option>
+                                        <option>2027</option>
+                                        <option>2028</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label for="cvv">CVV/CVC</label>
+                                    <input class="form-control" id="cvv" name="cvv" type="text"
+                                        placeholder="123" required maxlength="3" pattern="\d{3}">
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="card-footer card-footer-custom">
-                        <button class="btn btn-pagar w-100" type="submit">
-                            Pagar
-                        </button>
+                            <div class="card-footer card-footer-custom">
+                                <button class="btn btn-pagar w-100" type="submit">Pagar</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -307,6 +310,26 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Validación de formulario -->
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', function(event) {
+            const cardNumber = document.getElementById('ccnumber').value;
+            const cvv = document.getElementById('cvv').value;
+
+            // Validar que el número de tarjeta tenga exactamente 16 dígitos
+            if (!/^\d{16}$/.test(cardNumber)) {
+                alert('El número de la tarjeta debe tener 16 dígitos.');
+                event.preventDefault(); // Detener el envío del formulario
+            }
+
+            // Validar que el CVV tenga exactamente 3 dígitos
+            if (!/^\d{3}$/.test(cvv)) {
+                alert('El CVV debe tener 3 dígitos.');
+                event.preventDefault(); // Detener el envío del formulario
+            }
+        });
+    </script>
 </body>
 
 </html>

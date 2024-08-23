@@ -185,19 +185,16 @@
                 <p class="text-center">Agregar visitantes (menores de edad deberán ir con sus padres de familia)</p>
                 <form id="formInvitados">
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Nombre completo" id="nombreCompleto"
-                            required>
+                        <input type="text" class="form-control" placeholder="Nombre completo" id="nombreCompleto" required>
                     </div>
                     <div class="mb-3">
                         <input type="number" class="form-control" placeholder="Edad" id="edad" required>
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Teléfono (no obligatorio)"
-                            id="telefono">
+                        <input type="text" class="form-control" placeholder="Teléfono (no obligatorio)" id="telefono">
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="DUI (no obligatorio)"
-                            id="dui">
+                        <input type="text" class="form-control" placeholder="DUI (no obligatorio)" id="dui">
                     </div>
                     <div class="d-grid gap-2">
                         <button type="button" class="btn-add">+</button>

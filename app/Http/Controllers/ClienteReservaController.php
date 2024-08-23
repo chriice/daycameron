@@ -37,11 +37,16 @@ class ClienteReservaController extends Controller
             'fecha_entrada' => 'required|date',
             'fecha_salida' => 'required|date',
             'id_extra' => 'nullable|exists:extras,id_extra',
+            'invitados' => 'nullable|array', // Validar que los invitados sean un array
+            'invitados.*.nombre' => 'required|string|max:255',
+            'invitados.*.edad' => 'required|integer',
+            'invitados.*.telefono' => 'nullable|string|max:15',
+            'invitados.*.dui' => 'nullable|string|max:10',
         ]);
-    
+
         // Obtener las habitaciones seleccionadas de la sesión
         $habitacionesSeleccionadas = session('habitaciones_seleccionadas', []);
-    
+
         // Calcular el total
         $total = $this->calcularTotal(
             $habitacionesSeleccionadas,
@@ -49,8 +54,8 @@ class ClienteReservaController extends Controller
             $request->fecha_salida,
             $request->id_extra
         );
-    
-        // Guardar los datos de la reserva y del cliente en la sesión
+
+        // Guardar los datos de la reserva en una sesión aparte
         session([
             'datosReserva' => [
                 'nombre' => $request->nombre,
@@ -66,11 +71,20 @@ class ClienteReservaController extends Controller
                 'total' => $total,
             ]
         ]);
-    
+
+        // Guardar los invitados en una sesión separada
+        if ($request->has('invitados')) {
+            session(['invitados' => $request->invitados]);
+        } else {
+            session()->forget('invitados'); // Si no hay invitados, limpiar la sesión de invitados
+        }
+
         // Redirigir al formulario de pago
         return redirect()->route('mostrar.pago');
     }
-    
+
+
+
 
 
 

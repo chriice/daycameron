@@ -13,6 +13,7 @@ Route::get('/', [HomeController::class, 'index']);
 Route::post('/buscar', [ReservaController::class, 'buscar'])->name('buscar');
 Route::post('/guardar-habitacion', [ReservaController::class, 'guardarHabitacion'])->name('guardar.habitacion');
 
+
 Route::get('/datos-cliente', [ClienteReservaController::class, 'mostrarFormularioCliente'])->name('datos.cliente');
 Route::post('/guardar-reserva', [ClienteReservaController::class, 'guardarReserva'])->name('guardar.reserva');
 Route::get('/pago', [PagoController::class, 'mostrarFormularioPago'])->name('mostrar.pago');
