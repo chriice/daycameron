@@ -23,6 +23,25 @@ class ClienteReservaController extends Controller
         return view('datos_cliente', compact('numeroPersonas', 'extras'));
     }
 
+    public function agregarInvitado(Request $request)
+    {
+        $invitados = session('invitados', []);
+
+        // Agregar un nuevo invitado al array
+        $invitados[] = [
+            'nombre' => $request->input('nombre'),
+            'edad' => $request->input('edad'),
+            'telefono' => $request->input('telefono', null),
+            'dui' => $request->input('dui', null),
+        ];
+
+        // Guardar los invitados en la sesión
+        session(['invitados' => $invitados]);
+
+        return redirect()->back()->with('success', 'Invitado agregado correctamente.');
+    }
+
+
 
     public function guardarReserva(Request $request)
     {

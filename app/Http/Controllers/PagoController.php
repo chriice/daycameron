@@ -36,14 +36,6 @@ class PagoController extends Controller
     }
 
 
-
-    /**
-     * Procesa el pago.
-     */
-
-
-
-
     public function procesarPago(Request $request)
     {
 
@@ -137,11 +129,13 @@ class PagoController extends Controller
 
             // Confirmar la transacción
             DB::commit();
+            // Redirigir a la confirmación en caso de éxito
+            return redirect()->route('confirmacion')->with('success', 'Pago procesado correctamente. Reserva confirmada.');
 
             // Limpiar la sesión
             session()->forget(['datosReserva', 'habitaciones_seleccionadas', 'invitados']);
 
-            Log::info('Pago procesado correctamente. Redirigiendo a la confirmación.', []);
+
 
             // Redirigir a una página de confirmación de éxito
             return redirect()->route('confirmacion')->with('success', 'Pago procesado correctamente. Reserva confirmada.');
@@ -151,9 +145,8 @@ class PagoController extends Controller
 
             // Registrar el error en los logs
             Log::error('Error al procesar el pago:', ['error' => $e->getMessage()]);
-
-            // Redirigir con un mensaje de error
-            return redirect()->route('datos.cliente')->with('error', 'Ocurrió un error al procesar el pago. Intente nuevamente.');
+            // Redirigir a la confirmación con un mensaje de error
+            return redirect()->route('confirmacion')->with('error', 'Ocurrió un error al procesar el pago. Por favor, verifica tu información.');
         }
     }
 }

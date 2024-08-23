@@ -96,11 +96,12 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="#">Inicio</a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Servicios</a>
+                        <a class="nav-link" href="{{ route('servicios') }}">Mis Servicios</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Mi Reservación</a>
+                        <a class="nav-link" href="{{ route('misreservas') }}">Mis Reservaciones</a>
                     </li>
                 </ul>
             </div>
@@ -185,16 +186,19 @@
                 <p class="text-center">Agregar visitantes (menores de edad deberán ir con sus padres de familia)</p>
                 <form id="formInvitados">
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Nombre completo" id="nombreCompleto" required>
+                        <input type="text" class="form-control" placeholder="Nombre completo" id="nombreCompleto"
+                            required>
                     </div>
                     <div class="mb-3">
                         <input type="number" class="form-control" placeholder="Edad" id="edad" required>
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Teléfono (no obligatorio)" id="telefono">
+                        <input type="text" class="form-control" placeholder="Teléfono (no obligatorio)"
+                            id="telefono">
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="DUI (no obligatorio)" id="dui">
+                        <input type="text" class="form-control" placeholder="DUI (no obligatorio)"
+                            id="dui">
                     </div>
                     <div class="d-grid gap-2">
                         <button type="button" class="btn-add">+</button>

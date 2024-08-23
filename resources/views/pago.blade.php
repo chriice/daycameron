@@ -156,11 +156,12 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="#">Inicio</a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Servicios</a>
+                        <a class="nav-link" href="{{ route('servicios') }}">Mis Servicios</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Mi Reservación</a>
+                        <a class="nav-link" href="{{ route('misreservas') }}">Mis Reservaciones</a>
                     </li>
                 </ul>
             </div>
