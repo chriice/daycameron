@@ -107,7 +107,7 @@
         }
 
         .selected {
-            background-color: #d4ac0d !important;
+            background-color: #ff0000 !important;
             border: 2px solid #FFD700 !important;
         }
     </style>
@@ -226,52 +226,58 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            let selectedRooms = 0;
-            const requiredRooms = Math.ceil({{ $numeroPersonas }} / 4);
+    let selectedRooms = 0;
+    const maxRooms = Math.ceil({{ $numeroPersonas }} / 2); // Máximo número de habitaciones permitidas (1 habitación por cada 2 personas)
+    const minRooms = Math.ceil({{ $numeroPersonas }} / 4); // Mínimo número de habitaciones requeridas (1 habitación por cada 4 personas)
 
-            document.querySelectorAll('.option-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    const habitacionId = this.dataset.id;
+    document.querySelectorAll('.option-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const habitacionId = this.dataset.id;
 
-                    // Verificar si la habitación ya está seleccionada
-                    if (this.classList.contains('selected')) {
-                        this.classList.remove('selected');
-                        selectedRooms--;
+            // Verificar si la habitación ya está seleccionada
+            if (this.classList.contains('selected')) {
+                this.classList.remove('selected');
+                selectedRooms--;
 
-                        // Ocultar el botón "Siguiente" si no se han seleccionado suficientes habitaciones
-                        if (selectedRooms < requiredRooms) {
-                            document.getElementById('btn-siguiente').style.display = 'none';
-                        }
-                    } else {
-                        // Enviar la habitación seleccionada al servidor
-                        fetch('{{ route('guardar.habitacion') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                id_habitacion: habitacionId
-                            })
-                        }).then(response => {
-                            if (response.ok) {
-                                this.classList.add('selected');
-                                selectedRooms++;
+                // Ocultar el botón "Siguiente" si no se han seleccionado las habitaciones mínimas requeridas
+                if (selectedRooms < minRooms) {
+                    document.getElementById('btn-siguiente').style.display = 'none';
+                }
+            } else {
+                // Si no se han seleccionado todas las habitaciones permitidas, permitir la selección
+                if (selectedRooms < maxRooms) {
+                    // Enviar la habitación seleccionada al servidor
+                    fetch('{{ route('guardar.habitacion') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            id_habitacion: habitacionId
+                        })
+                    }).then(response => {
+                        if (response.ok) {
+                            this.classList.add('selected');
+                            selectedRooms++;
 
-                                // Mostrar el botón "Siguiente" si se han seleccionado suficientes habitaciones
-                                if (selectedRooms >= requiredRooms) {
-                                    document.getElementById('btn-siguiente').style.display =
-                                        'block';
-                                }
-                            } else {
-                                console.error(
-                                    'Error al guardar la habitación en la sesión.');
+                            // Mostrar el botón "Siguiente" cuando se seleccione el mínimo de habitaciones requeridas
+                            if (selectedRooms >= minRooms) {
+                                document.getElementById('btn-siguiente').style.display = 'block';
                             }
-                        });
-                    }
-                });
-            });
+                        } else {
+                            console.error('Error al guardar la habitación en la sesión.');
+                        }
+                    });
+                } else {
+                    // Mostrar un mensaje si se intenta seleccionar más habitaciones de las permitidas
+                    alert(`Puedes seleccionar hasta ${maxRooms} habitaciones para ${$numeroPersonas} personas.`);
+                }
+            }
         });
+    });
+});
+
     </script>
 
 </body>

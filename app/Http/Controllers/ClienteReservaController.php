@@ -34,7 +34,6 @@ class ClienteReservaController extends Controller
             'email' => 'required|email',
             'telefono' => 'nullable|string|max:15',
             'direccion' => 'required|string|max:255',
-            // Datos de la habitación y reserva
             'id_habitacion' => 'required|exists:habitaciones,id_habitacion',
             'fecha_entrada' => 'required|date',
             'fecha_salida' => 'required|date',
@@ -42,7 +41,12 @@ class ClienteReservaController extends Controller
         ]);
 
         // Calcular el total
-        $total = $this->calcularTotal($request->id_habitacion, $request->id_extra);
+        $total = $this->calcularTotal(
+            $request->id_habitacion,
+            $request->fecha_entrada,
+            $request->fecha_salida,
+            $request->id_extra
+        );
 
         // Guardar los datos de la reserva y del cliente en la sesión
         session([
@@ -66,14 +70,28 @@ class ClienteReservaController extends Controller
     }
 
 
-    private function calcularTotal($idHabitacion, $idExtra = null)
+
+    private function calcularTotal($idHabitacion, $fechaEntrada, $fechaSalida, $idExtra = null)
     {
         $habitacion = Habitacion::findOrFail($idHabitacion);
-        $total = $habitacion->tipoHabitacion->precio;
+        $precioPorDia = $habitacion->tipoHabitacion->precio;
+
+        // Calcular la cantidad de días de la reserva
+        $dias = \Carbon\Carbon::parse($fechaEntrada)->diffInDays(\Carbon\Carbon::parse($fechaSalida));
+
+        // Si las fechas son iguales, significa que es una estancia de 1 día mínimo
+        if ($dias == 0) {
+            $dias = 1;
+        }
+
+        // Calcular el total en función de la cantidad de días
+        $total = $precioPorDia * $dias;
 
         if ($idExtra) {
-            $extra = Extra::findOrFail($idExtra);
-            $total += $extra->precio;
+            $extra = Extra::find($idExtra);
+            if ($extra) {
+                $total += $extra->precio;
+            }
         }
 
         return $total;
